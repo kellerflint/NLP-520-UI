@@ -4,7 +4,7 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
-  const API = 'http://143.198.52.60:5000/predict';
+  const API = 'https://kellerflint.com:5000/predict';
 
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
