@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import './App.css';
 
 function App() {
-  const API = 'http://localhost:5000/predict';
+  const API = 'http://143.198.52.60:5000/predict';
 
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingDots, setLoadingDots] = useState('');
+
+  useEffect(() => {
+    let interval;
+    if (loading) {
+      interval = setInterval(() => {
+        setLoadingDots(prev => (prev.length < 3 ? prev + '.' : ''));
+      }, 500);
+    } else {
+      setLoadingDots('');
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,16 +29,19 @@ function App() {
 
     // Add user message to conversation
     setConversation(prev => [...prev, { type: 'user', text: message }]);
+    setLoading(true);
 
     try {
       const result = await axios.post(API, { message });
       // Add API response to conversation
-      console.log(result.data)
       setConversation(prev => [...prev, { type: 'bot', text: result.data.response }]);
+      console.log(result.data.response);
       setMessage('');
     } catch (error) {
       console.error('Error calling API:', error);
       setConversation(prev => [...prev, { type: 'error', text: 'Error: Could not get response from server' }]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,6 +54,7 @@ function App() {
             <strong>{entry.type === 'user' ? 'You:' : 'Bot:'}</strong> {entry.text}
           </div>
         ))}
+        {loading && <div className="message loading">Waiting for response{loadingDots}</div>}
       </div>
       <form onSubmit={handleSubmit}>
         <textarea
@@ -47,7 +65,7 @@ function App() {
           cols={50}
         />
         <br />
-        <button type="submit">Send</button>
+        <button type="submit" disabled={loading}>Send</button>
       </form>
     </div>
   );
