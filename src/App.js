@@ -109,7 +109,7 @@ function App() {
             />
           </div>
         </div>
-        <label>Message:</label>
+        <label>Dialog:</label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
