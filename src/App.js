@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 
 function App() {
-  const API = 'http://127.0.0.1:5000/predict';
-  //const API = 'https://kellerflint.com:5000/predict';
+  //const API = 'http://127.0.0.1:5000/predict';
+  const API = 'https://kellerflint.com:5000/predict';
 
   const [message, setMessage] = useState('');
   const [conversation, setConversation] = useState([]);
